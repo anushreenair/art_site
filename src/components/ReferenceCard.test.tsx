@@ -12,7 +12,7 @@ describe('ReferenceCard', () => {
     expect(screen.getByText('Beginner')).toBeVisible();
     expect(screen.getByText(/Pencil/)).toBeVisible();
     expect(screen.getByText(/20 minutes/)).toBeVisible();
-    expect(screen.getByText('Practice reference')).toBeVisible();
+    expect(screen.getAllByText('Personal Practice Only').length).toBeGreaterThan(0);
     await user.click(screen.getByRole('button', { name: 'Preview Window-light portrait' }));
     expect(screen.getByRole('dialog', { name: 'Window-light portrait' })).toBeVisible();
   });

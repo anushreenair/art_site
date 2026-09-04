@@ -1,4 +1,4 @@
-import type { ArtCategory, Artwork, Opportunity, Practice, ReferenceStudy } from '../types/content';
+import type { ArtCategory, Artwork, Opportunity, Practice, ReferenceLicensing, ReferenceStudy } from '../types/content';
 
 const image = (id: string, width = 900) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=85`;
 
@@ -48,7 +48,7 @@ export const opportunities: Opportunity[] = [
   { id: 'op-3', title: 'Autumn members exhibition', organisation: 'North Gallery', date: 'Closes 2 October', location: 'Manchester', type: 'Exhibition' },
 ];
 
-export const referenceStudies: ReferenceStudy[] = [
+const referenceStudySeeds: Omit<ReferenceStudy, 'licensing'>[] = [
   { id: 'ref-portrait', title: 'Window-light portrait', imageUrl: image('photo-1544005313-94ddf0286df2'), alt: 'Portrait in soft window light', subject: 'Portrait', difficulty: 'Beginner', medium: 'Pencil', time: '20 minutes', skills: ['Proportions', 'Values', 'Edges'], attempts: 1284, rights: 'Practice reference' },
   { id: 'ref-landscape', title: 'Blue hour valley', imageUrl: image('photo-1519681393784-d120267933ba'), alt: 'Mountain valley at blue hour', subject: 'Landscape', difficulty: 'Intermediate', medium: 'Gouache', time: '45 minutes', skills: ['Depth', 'Colour Mixing', 'Composition'], attempts: 946, rights: 'Artist licensed' },
   { id: 'ref-flowers', title: 'Tulips in a glass', imageUrl: image('photo-1490750967868-88aa4486c946'), alt: 'Pink flowers in bloom', subject: 'Flowers', difficulty: 'Beginner', medium: 'Watercolour', time: '20 minutes', skills: ['Brush Control', 'Colour Mixing', 'Texture'], attempts: 2218, rights: 'Practice reference' },
@@ -68,3 +68,11 @@ export const referenceStudies: ReferenceStudy[] = [
   { id: 'ref-architecture-two', title: 'Sunlit corridor', imageUrl: image('photo-1494438639946-1ebd1d20bf85'), alt: 'Light-filled architectural interior', subject: 'Architecture', difficulty: 'Intermediate', medium: 'Charcoal', time: '45 minutes', skills: ['Perspective', 'Lighting', 'Shadows'], attempts: 688, rights: 'Artist licensed' },
   { id: 'ref-nature-two', title: 'Leaf shadows', imageUrl: image('photo-1501004318641-b39e6451bec6'), alt: 'Layered green leaves in shadow', subject: 'Nature', difficulty: 'Beginner', medium: 'Colored Pencil', time: '10 minutes', skills: ['Texture', 'Contrast', 'Values'], attempts: 1742, rights: 'Practice reference' },
 ];
+
+const rightsProfiles: Record<ReferenceStudy['rights'], ReferenceLicensing> = {
+  'Public domain': { badges: ['Public Domain'], originalSource: 'Atelier public-domain catalogue', creator: 'Public-domain collection', licence: 'Public Domain / CC0', attribution: 'Attribution appreciated, not required', canSellResultingArtwork: true, canPublishOnline: true, practiceOnly: false, publicDomain: true },
+  'Artist licensed': { badges: ['Commercial Artwork Allowed', 'Attribution Required'], originalSource: 'Atelier licensed contributor archive', creator: 'Licensed contributing artist', licence: 'Atelier contributor licence', attribution: 'Credit the reference artist when you publish', canSellResultingArtwork: true, canPublishOnline: true, practiceOnly: false, publicDomain: false },
+  'Practice reference': { badges: ['Personal Practice Only', 'Study Only'], originalSource: 'Atelier practice-reference archive', creator: 'Rights-cleared reference contributor', licence: 'Personal practice licence', attribution: 'Do not publish the reference image; credit if sharing your study', canSellResultingArtwork: false, canPublishOnline: false, practiceOnly: true, publicDomain: false },
+};
+
+export const referenceStudies: ReferenceStudy[] = referenceStudySeeds.map((study) => ({ ...study, licensing: rightsProfiles[study.rights] }));

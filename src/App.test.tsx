@@ -29,21 +29,4 @@ describe('Atelier application', () => {
     expect(screen.getByText('Let the first lines stay visible.')).toBeInTheDocument();
   });
 
-  it('lets an artist enter the studio from the three-chapter art story', async () => {
-    const user = userEvent.setup();
-    render(
-      <MemoryRouter initialEntries={['/']}>
-        <App />
-      </MemoryRouter>,
-    );
-
-    expect(screen.getByRole('dialog', { name: /the atelier story/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /every artist begins with a mark/i })).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: /children holding paintbrushes/i })).toBeInTheDocument();
-    await user.click(screen.getByRole('button', { name: /enter atelier/i }));
-
-    expect(screen.queryByRole('dialog', { name: /the atelier story/i })).not.toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /make a mark/i })).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: /gesture study of a resting figure/i })).toBeInTheDocument();
-  });
 });

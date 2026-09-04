@@ -39,4 +39,16 @@ export type Medium = 'Oil Painting' | 'Acrylic' | 'Watercolour' | 'Gouache' | 'P
 export type Skill = 'Lighting' | 'Skin Tones' | 'Perspective' | 'Colour Mixing' | 'Texture' | 'Composition' | 'Values' | 'Shadows' | 'Proportions' | 'Anatomy' | 'Brush Control' | 'Edges' | 'Depth' | 'Contrast';
 export type StudyTime = '5 minutes' | '10 minutes' | '20 minutes' | '30 minutes' | '45 minutes' | '1 hour' | '2 hours' | 'Long Study';
 
-export type ReferenceStudy = { id: string; title: string; imageUrl: string; alt: string; subject: Subject; difficulty: Difficulty; medium: Medium; time: StudyTime; skills: Skill[]; attempts: number; rights: 'Public domain' | 'Artist licensed' | 'Practice reference' };
+export type ReferenceRightsBadge = 'Public Domain' | 'Commercial Artwork Allowed' | 'Attribution Required' | 'Personal Practice Only' | 'Study Only' | 'Permission Required';
+export type ReferenceLicensing = {
+  badges: ReferenceRightsBadge[];
+  originalSource: string;
+  creator: string;
+  licence: string;
+  attribution: string;
+  canSellResultingArtwork: boolean;
+  canPublishOnline: boolean;
+  practiceOnly: boolean;
+  publicDomain: boolean;
+};
+export type ReferenceStudy = { id: string; title: string; imageUrl: string; alt: string; subject: Subject; difficulty: Difficulty; medium: Medium; time: StudyTime; skills: Skill[]; attempts: number; rights: 'Public domain' | 'Artist licensed' | 'Practice reference'; licensing: ReferenceLicensing };
