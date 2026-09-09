@@ -8,7 +8,7 @@ export function SignInPage() {
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     setError('');
-    if (!email) { setError('Enter your email address.'); return; }
+    if (!email.trim()) { setError('Enter your email address.'); return; }
     if (!password) { setError('Enter your password.'); return; }
     setLoading(true);
     try {

@@ -6,18 +6,18 @@ type UserRecord = { id: string; name: string; email: string; password: string; c
 
 export async function POST(req: Request): Promise<Response> {
   const body: SigninBody = await req.json().catch(() => ({} as SigninBody));
-  if (!body.email || !body.password) {
-    return json({ error: 'Email and password are required.' }, 400);
+  if (!body.email?.trim() || !body.password) {
+    return json({ ok: false, error: 'Email and password are required.' }, 400);
   }
 
   const user = await getUser(body.email.toLowerCase().trim());
   if (!user) {
-    return json({ error: 'No account found with that email.' }, 401);
+    return json({ ok: false, error: 'No account found with that email.' }, 401);
   }
 
   const match = await compare(body.password, user.password);
   if (!match) {
-    return json({ error: 'Incorrect password.' }, 401);
+    return json({ ok: false, error: 'Incorrect password.' }, 401);
   }
 
   return json({ ok: true, userId: user.id, name: user.name });
@@ -34,7 +34,7 @@ async function getUser(email: string): Promise<UserRecord | null> {
   }
 }
 
-function json(data: unknown, status = 200) {
+function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
     status,
     headers: { 'Content-Type': 'application/json' },

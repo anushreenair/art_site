@@ -12,7 +12,7 @@ export function SignUpPage() {
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     setError('');
-    if (!values.name || !values.email || values.password.length < 8) {
+    if (!values.name.trim() || !values.email.trim() || values.password.length < 8) {
       setError('Add your name, email, and a password with at least 8 characters.');
       return;
     }
