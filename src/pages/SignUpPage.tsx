@@ -45,7 +45,7 @@ export function SignUpPage() {
       <input id="new-password" type="password" autoComplete="new-password" value={values.password} onChange={(event) => setValues({ ...values, password: event.target.value })} disabled={loading} />
       {error && <p className="form-error">{error}</p>}
       <button className="button button-dark" type="submit" disabled={loading}>
-        {loading ? 'Creating account…' : 'Create account <span>→</span>'}
+        {loading ? 'Creating account…' : <>Create account <span>→</span></>}
       </button>
       <p className="auth-switch">Already a member? <Link to="/sign-in">Sign in</Link></p>
     </form>}
