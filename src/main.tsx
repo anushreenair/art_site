@@ -25,5 +25,16 @@ import './styles/wip-critique.css';
 import './styles/finish-piece.css';
 import './styles/art-roulette.css';
 import './styles/artist-rights.css';
+import './styles/critique-intent.css';
+import './styles/practice-journal.css';
+import './styles/micro-practice.css';
+import './styles/before-after.css';
+import './styles/many-artists.css';
+import './styles/reference-packs.css';
+import './styles/application-tracker.css';
+import './styles/digitise-artwork.css';
+import './styles/studio-sessions.css';
+import './styles/creation-boundary.css';
+import './styles/external-reference.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><BrowserRouter><App /></BrowserRouter></React.StrictMode>);

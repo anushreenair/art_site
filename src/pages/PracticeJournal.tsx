@@ -1,0 +1,11 @@
+import { Link } from 'react-router-dom';
+import { AppShell } from '../components/AppShell';
+import { getJournalEntries, getJournalRecommendation } from '../lib/practiceJournal';
+
+function displayDate(value: string) { return new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(value)); }
+
+export function PracticeJournal() {
+  const entries = getJournalEntries();
+  const recommendation = getJournalRecommendation(entries);
+  return <AppShell><section className="journal-hero"><p className="eyebrow">A quieter kind of progress</p><h1 aria-label="Practice journal">Practice<br /><em>journal.</em></h1><p>Return to the decisions, discoveries, and useful friction that shaped your work.</p></section><section className="journal-layout">{recommendation ? <aside className="journal-recommendation"><p className="eyebrow">A pattern worth following</p><h2>You've mentioned difficulty with {recommendation.focus.toLowerCase()} during {recommendation.count} recent sessions.</h2><p>Give that one problem a little protected attention before moving on.</p><Link to={recommendation.href}>{recommendation.title} ↗</Link></aside> : <aside className="journal-recommendation quiet"><p className="eyebrow">A pattern will appear</p><h2>Keep a few short reflections.</h2><p>When a challenge repeats, we’ll turn it into your next focused study.</p><Link to="/build-practice">Build a practice ↗</Link></aside>}<section className="journal-history"><header><p className="eyebrow">Journal history</p><h2>The work, in your own words.</h2><span>{entries.length} {entries.length === 1 ? 'entry' : 'entries'}</span></header>{entries.length ? <div>{entries.map((entry) => <article key={entry.id}><div><time dateTime={entry.createdAt}>{displayDate(entry.createdAt)}</time><strong>{entry.sessionTitle}</strong></div><dl>{entry.worked && <div><dt>Worked</dt><dd>{entry.worked}</dd></div>}{entry.difficult && <div><dt>Difficult</dt><dd>{entry.difficult}</dd></div>}{entry.learned && <div><dt>Learned</dt><dd>{entry.learned}</dd></div>}{entry.improve && <div><dt>Next</dt><dd>{entry.improve}</dd></div>}</dl></article>)}</div> : <p className="journal-empty">No entries yet. Finish a practice when you’re ready to leave a small note for the next one.</p>}</section></section></AppShell>;
+}

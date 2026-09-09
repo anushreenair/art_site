@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AppShell } from '../components/AppShell';
 import { challengeHistory, getDailyChallenge, weeklyThemes } from '../data/challenges';
+import { CreationBoundary } from '../components/CreationBoundary';
 
 export function ChallengePage() {
   const challenge = getDailyChallenge();
@@ -30,6 +31,6 @@ export function ChallengePage() {
       <div className="weekly-progress"><p className="eyebrow">This week · {challenge.theme}</p><h2>{weeklyProgress} of 7 shared studies</h2><div aria-label={`${weeklyProgress} of 7 weekly challenges complete`} className="week-track">{Array.from({ length: 7 }, (_, index) => <i className={index < weeklyProgress ? 'complete' : ''} key={index} />)}</div><p>Return tomorrow for a new point of view.</p></div>
       <div className="theme-list"><p className="eyebrow">Weekly themes</p>{weeklyThemes.map((theme) => <span className={theme === challenge.theme ? 'active' : ''} key={theme}>{theme}</span>)}</div>
     </section>
-    <section className="challenge-history"><p className="eyebrow">Challenge history</p><h2>The work you showed up for.</h2><div>{challengeHistory.map((entry) => <article key={entry.day}><span>{entry.day}</span><strong>{entry.title}</strong><em>{entry.result}</em><small>{entry.score}</small></article>)}</div></section>
+    <section className="challenge-history"><p className="eyebrow">Challenge history</p><h2>The work you showed up for.</h2><div>{challengeHistory.map((entry) => <article key={entry.day}><span>{entry.day}</span><strong>{entry.title}</strong><em>{entry.result}</em><small>{entry.score}</small></article>)}</div><CreationBoundary startTo={`/practice/${challenge.reference.id}`} /></section>
   </AppShell>;
 }

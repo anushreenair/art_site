@@ -9,7 +9,11 @@ describe('ExplorePage', () => {
     const user = userEvent.setup();
     render(<MemoryRouter initialEntries={['/explore']}><App /></MemoryRouter>);
     expect(screen.getByRole('heading', { name: /find the study/i })).toBeVisible();
-    expect(screen.getByRole('heading', { name: /18 studies/i })).toBeVisible();
+    expect(screen.getByRole('heading', { name: /6 studies ready to make/i })).toBeVisible();
+    expect(screen.getByText("You've found enough inspiration.")).toBeVisible();
+    await user.click(screen.getByRole('button', { name: 'Show Me 5 More' }));
+    expect(screen.getByRole('heading', { name: /11 studies ready to make/i })).toBeVisible();
+    expect(screen.getByRole('link', { name: /open the portrait reference pack/i })).toHaveAttribute('href', '/reference-packs');
     await user.click(screen.getAllByRole('button', { name: 'Portrait' })[1]);
     expect(screen.getByRole('heading', { name: /2 studies/i })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'Window-light portrait' })).toBeVisible();

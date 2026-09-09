@@ -12,6 +12,7 @@ describe('ChallengePage', () => {
     expect(screen.getByRole('heading', { name: /today's challenge/i })).toBeVisible();
     expect(screen.getByText(/participants/i)).toBeVisible();
     expect(screen.getByText('Daily streak')).toBeVisible();
+    expect(screen.getByText("You've found enough inspiration.")).toBeVisible();
 
     await user.click(screen.getByRole('button', { name: 'Join Challenge' }));
     expect(screen.getByRole('link', { name: /open the workspace/i })).toBeVisible();

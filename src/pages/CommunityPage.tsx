@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AppShell } from '../components/AppShell';
+import { CritiqueIntent, type CritiqueIntentSelection } from '../components/CritiqueIntent';
+import { CreationBoundary } from '../components/CreationBoundary';
 
 const posts = [
   { id: 'maya', artist: 'Maya Chen', handle: '@mayamakes', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=900&q=85', alt: 'Portrait in soft window light', title: 'Trying to keep the window light quiet', context: 'Portrait · Pencil · 20 minutes', preference: 'Critique welcome', note: 'I’m especially unsure about the cheek shadow and the distance between the eyes.', critic: 'Arun V. · Experienced Critic', feedback: 'The restraint in the light side is lovely. Try connecting the jaw shadow before shaping the lips.' },
@@ -22,6 +24,8 @@ export function CommunityPage() {
   const [saved, setSaved] = useState<string[]>([]);
   const [followed, setFollowed] = useState<string[]>([]);
   const [liked, setLiked] = useState<string[]>([]);
+  const [intentPost, setIntentPost] = useState<string | null>(null);
+  const [requestIntents, setRequestIntents] = useState<Record<string, CritiqueIntentSelection>>({});
 
   const toggle = (id: string, current: string[], setCurrent: (next: string[]) => void) => {
     setCurrent(current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
@@ -59,17 +63,18 @@ export function CommunityPage() {
                   <button aria-pressed={saved.includes(post.id)} onClick={() => toggle(post.id, saved, setSaved)}>{saved.includes(post.id) ? 'Saved' : 'Save'}</button>
                   <button onClick={() => setFeedbackOpen(feedbackOpen === post.id ? null : post.id)}>Comment</button>
                   <button aria-pressed={followed.includes(post.id)} onClick={() => toggle(post.id, followed, setFollowed)}>{followed.includes(post.id) ? 'Following' : 'Follow'}</button>
-                  <button onClick={() => setRequested(post.id)}>Request Critique</button>
+                  <button onClick={() => setIntentPost(post.id)}>Request Critique</button>
                   <button onClick={() => navigator.clipboard?.writeText(window.location.href)}>Share Completed Practice</button>
                   <Link to="/profile">View Artist Profile</Link>
                 </div>
+                {requested === post.id && requestIntents[post.id] && <p className="requested-intent">Requested: {requestIntents[post.id].areas.join(' + ')} · {requestIntents[post.id].tone}</p>}
                 {post.preference !== 'No critique' && (
                   <div className="community-feedback">
                     <div><span>{post.critic}</span><p>{post.feedback}</p></div>
                     <button onClick={() => setFeedbackOpen(feedbackOpen === post.id ? null : post.id)}>Leave constructive feedback</button>
                   </div>
                 )}
-                {feedbackOpen === post.id && <FeedbackForm onCancel={() => setFeedbackOpen(null)} onSend={() => { setFeedbackSent(post.id); setFeedbackOpen(null); }} />}
+                {feedbackOpen === post.id && <FeedbackForm intent={requestIntents[post.id]} onCancel={() => setFeedbackOpen(null)} onSend={() => { setFeedbackSent(post.id); setFeedbackOpen(null); }} />}
                 {feedbackSent === post.id && <p className="feedback-shared">Feedback shared</p>}
               </div>
             </article>
@@ -89,10 +94,12 @@ export function CommunityPage() {
           </section>
         </aside>
       </section>
+      <div className="community-creation-boundary"><CreationBoundary startTo="/build-practice" /></div>
+      {intentPost && <CritiqueIntent target="Community Critique" onClose={() => setIntentPost(null)} onContinue={(intent) => { setRequested(intentPost); setRequestIntents((current) => ({ ...current, [intentPost]: intent })); setIntentPost(null); }} />}
     </AppShell>
   );
 }
 
-function FeedbackForm({ onCancel, onSend }: { onCancel: () => void; onSend: () => void }) {
-  return <form className="feedback-form" onSubmit={(event) => { event.preventDefault(); onSend(); }}><label>What worked well<textarea required /></label><label>What could improve<textarea required /></label><label>One suggestion<textarea required /></label><div><button type="submit">Share feedback</button><button type="button" onClick={onCancel}>Cancel</button></div></form>;
+function FeedbackForm({ intent, onCancel, onSend }: { intent?: CritiqueIntentSelection; onCancel: () => void; onSend: () => void }) {
+  return <form className="feedback-form" onSubmit={(event) => { event.preventDefault(); onSend(); }}>{intent && <p className="feedback-intent">Requested focus: {intent.areas.join(' + ')} · {intent.tone}</p>}<label>What worked well<textarea required /></label><label>What could improve<textarea required /></label><label>One suggestion<textarea required /></label><div><button type="submit">Share feedback</button><button type="button" onClick={onCancel}>Cancel</button></div></form>;
 }

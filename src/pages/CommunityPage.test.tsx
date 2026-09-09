@@ -13,9 +13,14 @@ describe('CommunityPage', () => {
     expect(screen.getByTestId('community-hero-copy')).toContainElement(screen.getByRole('heading', { name: /the critique studio/i }));
     expect(screen.getByText('Critique welcome')).toBeVisible();
     expect(screen.getByText('Helpful Critic')).toBeVisible();
+    expect(screen.getByText("You've found enough inspiration.")).toBeVisible();
 
     await user.click(screen.getAllByRole('button', { name: 'Request Critique' })[0]);
+    expect(screen.getByRole('heading', { name: 'What would you like feedback on?' })).toBeVisible();
+    await user.click(screen.getByRole('button', { name: 'Composition' }));
+    await user.click(screen.getByRole('button', { name: 'Continue to Community Critique' }));
     expect(screen.getAllByText('Feedback requested')).toHaveLength(2);
+    expect(screen.getByText('Requested: Composition · Balanced')).toBeVisible();
 
     await user.click(screen.getAllByRole('button', { name: 'Leave constructive feedback' })[0]);
     expect(screen.getByLabelText('What worked well')).toBeVisible();

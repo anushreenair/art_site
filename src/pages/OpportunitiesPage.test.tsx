@@ -21,4 +21,22 @@ describe('OpportunitiesPage', () => {
     expect(browser.getByText('Mumbai Watercolour Open')).toBeVisible();
     expect(browser.queryByText('Monsoon Prize for Contemporary Art')).not.toBeInTheDocument();
   });
+
+  it('tracks an application stage, requirements, and its deadline reminder', async () => {
+    const user = userEvent.setup();
+    render(<MemoryRouter initialEntries={['/opportunities']}><App /></MemoryRouter>);
+
+    await user.click(screen.getByRole('button', { name: /my applications/i }));
+    expect(screen.getByRole('heading', { name: /my applications/i })).toBeVisible();
+    expect(screen.getAllByText('Deadline in 4 days.')[0]).toBeVisible();
+    expect(screen.getByText('5 Artwork Images ✓')).toBeVisible();
+    expect(screen.getByText('Artist Bio ✓')).toBeVisible();
+    expect(screen.getByText('Portfolio Link ✓')).toBeVisible();
+
+    await user.selectOptions(screen.getByLabelText('Application status'), 'Applied');
+    expect(screen.getByDisplayValue('Applied')).toBeVisible();
+    const artistStatement = screen.getByRole('button', { name: 'Artist Statement' });
+    await user.click(artistStatement);
+    expect(artistStatement).toHaveAttribute('aria-pressed', 'true');
+  });
 });

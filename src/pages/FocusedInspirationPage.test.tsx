@@ -11,6 +11,7 @@ describe('FocusedInspirationPage', () => {
 
     expect(screen.getByRole('heading', { name: /focused inspiration/i })).toBeVisible();
     expect(screen.getByText(/you've found enough inspiration/i)).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Save For Later' })).toBeVisible();
     expect(screen.getByText('3 studies selected')).toBeVisible();
 
     await user.click(screen.getByRole('button', { name: /show me 5 more/i }));

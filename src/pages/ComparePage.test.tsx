@@ -18,10 +18,17 @@ describe('ComparePage', () => {
 
     await user.click(screen.getByRole('button', { name: 'Save attempt to profile' }));
     expect(screen.getByText('Attempt saved to profile')).toBeVisible();
+    expect(screen.getByRole('heading', { name: /a few words for the work/i })).toBeVisible();
+    await user.click(screen.getByRole('button', { name: 'Skip for now' }));
 
     await user.click(screen.getByRole('button', { name: 'Generate studio critique' }));
+    expect(screen.getByRole('heading', { name: 'What would you like feedback on?' })).toBeVisible();
+    await user.click(screen.getByRole('button', { name: 'Lighting' }));
+    await user.click(screen.getByRole('button', { name: 'Direct' }));
+    await user.click(screen.getByRole('button', { name: 'Continue to AI Critique' }));
     expect(screen.getByRole('heading', { name: 'What worked well' })).toBeVisible();
     expect(screen.getByRole('heading', { name: 'What could improve' })).toBeVisible();
+    expect(screen.getByText('Requested focus: Lighting · Direct')).toBeVisible();
     expect(screen.getByText(/facial proportions are strong/i)).toBeVisible();
   });
 });

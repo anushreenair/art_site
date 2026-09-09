@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { AppShell } from '../components/AppShell';
+import { ApplicationTracker } from '../components/ApplicationTracker';
 import { filterOpportunities, opportunityCities, opportunityListings, opportunityTabs, type ArtistOpportunity, type OpportunityTab } from '../data/opportunity-listings';
 
 const emptyFilters = { city: '', format: '', medium: '', experience: '', cost: '', date: '', deadline: '', category: '', eligibility: '', age: '', prize: '', entryFee: '' };
@@ -8,6 +9,7 @@ export function OpportunitiesPage() {
   const [tab, setTab] = useState<OpportunityTab>('Nearby');
   const [filters, setFilters] = useState(emptyFilters);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [trackerOpen, setTrackerOpen] = useState(false);
   const visible = useMemo(() => filterOpportunities(opportunityListings, tab, filters), [filters, tab]);
   const updateFilter = (name: keyof typeof filters, value: string) => setFilters((current) => ({ ...current, [name]: value }));
 
@@ -17,11 +19,12 @@ export function OpportunitiesPage() {
         <p className="eyebrow">Opportunity desk / India + online</p>
         <h1>Opportu<em>nities</em></h1>
         <p>Find a room for the work—whether that is a local sketch walk, a funded studio, a commission, or a call that deserves the piece you have been making.</p>
+        <button className="open-applications" onClick={() => setTrackerOpen(true)}>My applications <span>↗</span></button>
       </div>
       <div className="opportunity-signal"><span>Right now</span><strong>{opportunityListings.filter((listing) => listing.closingSoon).length}</strong><small>deadlines to notice</small></div>
     </section>
 
-    <section className="opportunity-browser" aria-label="Browse opportunities">
+    {trackerOpen ? <ApplicationTracker onBrowse={() => setTrackerOpen(false)} /> : <><section className="opportunity-browser" aria-label="Browse opportunities">
       <div className="opportunity-tabs" role="tablist" aria-label="Opportunity type">
         {opportunityTabs.map((item) => <button key={item} role="tab" aria-selected={tab === item} onClick={() => setTab(item)}>{item}</button>)}
       </div>
@@ -53,7 +56,7 @@ export function OpportunitiesPage() {
       <OpportunityShelf title="Recommended for you" copy="Selected for a painter building a consistent practice." listings={opportunityListings.filter((listing) => listing.recommended)} />
       <OpportunityShelf title="Free opportunities" copy="No entry fee, just a clear reason to submit." listings={opportunityListings.filter((listing) => listing.entryFee === 'Free')} />
       <OpportunityShelf title="Online opportunities" copy="Calls and commissions that travel beyond your city." listings={opportunityListings.filter((listing) => listing.format === 'Online')} tone="ink" />
-    </section>
+    </section></>}
   </AppShell>;
 }
 
