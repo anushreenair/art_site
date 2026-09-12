@@ -36,5 +36,6 @@ import './styles/digitise-artwork.css';
 import './styles/studio-sessions.css';
 import './styles/creation-boundary.css';
 import './styles/external-reference.css';
+import './styles/search.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(<React.StrictMode><BrowserRouter><App /></BrowserRouter></React.StrictMode>);

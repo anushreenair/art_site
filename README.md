@@ -46,6 +46,18 @@ npm run dev
 
 Open [http://localhost:5173/](http://localhost:5173/) in your browser.
 
+For local auth testing without a database, use `artist@atelier.test` with password `password123`, then enter OTP `123456`. Accounts created through the local sign-up form are kept in memory until the dev server restarts.
+
+### Neon auth database
+
+1. Create a Neon project and copy its pooled connection string.
+2. Run the SQL in `db/schema.sql` in the Neon SQL Editor.
+3. Create `.env.local` with `DATABASE_URL="your-neon-connection-string"`.
+4. Restart `npm run dev`. Sign-up and sign-in will now use Neon; the in-memory fallback is used only when `DATABASE_URL` is absent.
+5. In Vercel, add `DATABASE_URL` under Project Settings → Environment Variables for Preview and Production, then redeploy.
+
+The application stores bcrypt password hashes only. Never commit `.env.local` or paste the connection string into source files.
+
 ### Build for production
 
 ```bash

@@ -1,3 +1,4 @@
+import { useSearchParams } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 import { AppShell } from '../components/AppShell';
 import { ApplicationTracker } from '../components/ApplicationTracker';
@@ -6,7 +7,9 @@ import { filterOpportunities, opportunityCities, opportunityListings, opportunit
 const emptyFilters = { city: '', format: '', medium: '', experience: '', cost: '', date: '', deadline: '', category: '', eligibility: '', age: '', prize: '', entryFee: '' };
 
 export function OpportunitiesPage() {
-  const [tab, setTab] = useState<OpportunityTab>('Nearby');
+  const [params] = useSearchParams();
+  const selectedOpportunity = opportunityListings.find(item => item.id === params.get('opportunity'));
+  const [tab, setTab] = useState<OpportunityTab>(selectedOpportunity?.type ?? 'Nearby');
   const [filters, setFilters] = useState(emptyFilters);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [trackerOpen, setTrackerOpen] = useState(false);
@@ -65,7 +68,7 @@ function FilterSelect({ label, value, onChange, options }: { label: string; valu
 }
 
 function OpportunityRow({ listing, index }: { listing: ArtistOpportunity; index: number }) {
-  return <article className="opportunity-slip">
+  return <article id={`opportunity-${listing.id}`} className="opportunity-slip">
     <span className="opportunity-index">{String(index).padStart(2, '0')}</span>
     <div className="opportunity-title"><p className="eyebrow">{listing.type} · {listing.format}</p><h2>{listing.name}</h2><p>{listing.city} · {listing.venue}</p></div>
     <dl><div><dt>Date</dt><dd>{listing.date}</dd></div><div><dt>Deadline</dt><dd>{listing.deadline}</dd></div><div><dt>Entry fee</dt><dd>{listing.entryFee}</dd></div><div><dt>Prize</dt><dd>{listing.prize}</dd></div></dl>

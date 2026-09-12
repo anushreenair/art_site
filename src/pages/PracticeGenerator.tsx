@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { AppShell } from '../components/AppShell';
 import { PracticeReflection } from '../components/PracticeReflection';
 import { buildPracticeSession, type PracticeChoices, type PracticeLength, type PracticeSession } from '../lib/practiceSession';
@@ -15,7 +15,21 @@ const initialChoices: PracticeChoices = { subject: 'Portrait', difficulty: 'Inte
 function formatClock(seconds: number) { return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`; }
 
 export function PracticeGenerator() {
-  const [choices, setChoices] = useState<PracticeChoices>(initialChoices);
+  const [params] = useSearchParams();
+  const [choices, setChoices] = useState<PracticeChoices>(() => {
+    const next = { ...initialChoices };
+    const subject = params.get('subject') as Subject;
+    const medium = params.get('medium') as Medium;
+    const difficulty = params.get('difficulty') as Difficulty;
+    const skill = params.get('skill') as Skill;
+    if (subjects.includes(subject)) next.subject = subject;
+    if (mediums.includes(medium)) next.medium = medium;
+    if (difficulties.includes(difficulty)) next.difficulty = difficulty;
+    if (skills.includes(skill)) next.skills = [skill];
+    const minutes = Number(params.get('durationMinutes'));
+    if (minutes > 0) next.time = minutes >= 120 ? '2 hours' : minutes >= 60 ? '1 hour' : `${[45, 30, 20, 10, 5].find(value => value <= minutes) ?? 5} minutes` as PracticeLength;
+    return next;
+  });
   const [session, setSession] = useState<PracticeSession | null>(null);
   const [remaining, setRemaining] = useState(0);
   const [status, setStatus] = useState<'idle' | 'running' | 'paused' | 'finished'>('idle');

@@ -4,11 +4,7 @@ import { AppShell } from '../components/AppShell';
 import { CritiqueIntent, type CritiqueIntentSelection } from '../components/CritiqueIntent';
 import { CreationBoundary } from '../components/CreationBoundary';
 
-const posts = [
-  { id: 'maya', artist: 'Maya Chen', handle: '@mayamakes', image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=900&q=85', alt: 'Portrait in soft window light', title: 'Trying to keep the window light quiet', context: 'Portrait · Pencil · 20 minutes', preference: 'Critique welcome', note: 'I’m especially unsure about the cheek shadow and the distance between the eyes.', critic: 'Arun V. · Experienced Critic', feedback: 'The restraint in the light side is lovely. Try connecting the jaw shadow before shaping the lips.' },
-  { id: 'diego', artist: 'Diego Rios', handle: '@diegodraws', image: 'https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=900&q=85', alt: 'Sunlit architectural interior', title: 'Corridor in four values', context: 'Architecture · Charcoal · 45 minutes', preference: 'No critique', note: 'A small study from today’s reference desk. Sharing the finished piece, not seeking notes this time.', critic: 'Nora C. · Helpful Critic', feedback: 'Saved to a reference collection.' },
-  { id: 'lena', artist: 'Lena Adeyemi', handle: '@lenalines', image: 'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=900&q=85', alt: 'Pink spring blossom branches', title: 'Tulips, before the colour escaped', context: 'Flowers · Watercolour · 20 minutes', preference: 'Feedback requested', note: 'Would love one practical suggestion for keeping the glass from becoming too outlined.', critic: 'Sora Lee · Mentor', feedback: 'Keep the brightest edge broken; let the background carry part of the glass shape.' },
-];
+import { communityPosts as posts } from '../data/community-posts';
 
 const criticLevels = [
   ['Helpful Critic', 'Offers clear, specific observations'],
@@ -48,7 +44,7 @@ export function CommunityPage() {
       <section className="community-layout">
         <section className="community-feed" aria-label="Community practice">
           {posts.map((post) => (
-            <article className="community-post" key={post.id}>
+            <article className="community-post" id={`post-${post.id}`} key={post.id}>
               <header>
                 <div><strong>{post.artist}</strong><span>{post.handle}</span></div>
                 <button className={`critique-preference ${requested === post.id ? 'requested' : ''}`}>{requested === post.id ? 'Feedback requested' : post.preference}</button>

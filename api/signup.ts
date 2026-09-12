@@ -1,8 +1,7 @@
-import { put, get } from '@vercel/blob';
-import { hash, compare } from 'bcryptjs';
+import { hash } from 'bcryptjs';
+import { createUser, findUserByEmail, normalizeEmail } from '../src/lib/authDatabase';
 
 type SignupBody = { name: string; email: string; password: string };
-type UserRecord = { id: string; name: string; email: string; password: string; created: string };
 
 export async function POST(req: Request): Promise<Response> {
   const body: SignupBody = await req.json().catch(() => ({} as SignupBody));
@@ -13,46 +12,23 @@ export async function POST(req: Request): Promise<Response> {
     return json({ ok: false, error: 'Password must be at least 8 characters.' }, 400);
   }
 
-  const email = body.email.toLowerCase().trim();
-  const existing = await getUser(email);
-  if (existing) {
-    return json({ ok: false, error: 'An account with this email already exists.' }, 409);
-  }
-
-  const passwordHash = await hash(body.password, 12);
-  const user: UserRecord = {
-    id: crypto.randomUUID(),
-    name: body.name.trim(),
-    email,
-    password: passwordHash,
-    created: new Date().toISOString(),
-  };
-
   try {
-    await put(email, JSON.stringify(user), {
-      access: 'private',
-      contentType: 'application/json',
-    });
-  } catch (err: unknown) {
-    const msg = err instanceof Error ? err.message : String(err);
-    if (msg.includes('already exists')) {
+    const email = normalizeEmail(body.email);
+    if (await findUserByEmail(email)) {
       return json({ ok: false, error: 'An account with this email already exists.' }, 409);
     }
-    throw err;
+    const user = await createUser(body.name, email, await hash(body.password, 12));
+    return json({ ok: true, userId: user.id, name: user.name });
+  } catch (err: unknown) {
+    if (isDuplicateEmailError(err)) {
+      return json({ ok: false, error: 'An account with this email already exists.' }, 409);
+    }
+    return json({ ok: false, error: 'Could not create account right now.' }, 500);
   }
-
-  return json({ ok: true, userId: user.id, name: user.name });
 }
 
-async function getUser(email: string): Promise<UserRecord | null> {
-  try {
-    const result = await get(email, { access: 'private' });
-    if (!result || result.statusCode !== 200 || result.stream == null) return null;
-    const text = await new Response(result.stream).text();
-    return JSON.parse(text) as UserRecord;
-  } catch {
-    return null;
-  }
+function isDuplicateEmailError(error: unknown): boolean {
+  return typeof error === 'object' && error !== null && 'code' in error && error.code === '23505';
 }
 
 function json(data: unknown, status = 200): Response {

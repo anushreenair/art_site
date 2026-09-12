@@ -17,11 +17,20 @@ type PracticeMood = keyof typeof moods;
 export function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<ArtCategory | null>(null);
   const [practiceMood, setPracticeMood] = useState<PracticeMood>('Observe');
+  const [authName] = useState(() => {
+    try {
+      const stored = window.localStorage.getItem('atelier-auth-user');
+      return stored ? (JSON.parse(stored) as { name?: string }).name ?? '' : '';
+    } catch {
+      return '';
+    }
+  });
 
   return <>
     <AppShell>
       <section className="cinema-hero">
         <div className="cinema-hero-copy">
+          {authName && <p className="cinema-kicker">Welcome, {authName}</p>}
           <p className="cinema-kicker"><i /> Your practice room is open</p>
           <h1>Make a <em>mark.</em><br />See where it takes you.</h1>
           <p className="cinema-lede">A living studio for artists who want less scrolling and more time with the work.</p>
